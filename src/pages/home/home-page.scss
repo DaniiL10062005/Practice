@@ -1,0 +1,14 @@
+.home {
+  &__category {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+
+    white-space: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    @media screen and (max-width: 425px) {
+      max-width: 280px;
+    }
+  }
+}

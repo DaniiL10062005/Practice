@@ -1,0 +1,13 @@
+.profile-orders {
+  &__orders {
+    max-height: 500px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    width: 60%;
+
+    @media screen and (max-width: 1000px) {
+      width: 100%;
+    }
+  }
+}

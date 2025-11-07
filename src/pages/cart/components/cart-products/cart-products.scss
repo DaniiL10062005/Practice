@@ -1,0 +1,17 @@
+.cart {
+  order: 1;
+  flex: 1;
+  width: 100%;
+
+  &__products {
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    width: 100%;
+  }
+
+  @media screen and (max-width: 768px) {
+    order: 2;
+  }
+}

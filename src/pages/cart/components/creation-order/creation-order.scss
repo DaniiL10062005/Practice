@@ -1,0 +1,9 @@
+.order-card {
+  min-width: 300px;
+  order: 2;
+
+  @media screen and (max-width: 768px) {
+    min-width: 100%;
+    order: 1;
+  }
+}

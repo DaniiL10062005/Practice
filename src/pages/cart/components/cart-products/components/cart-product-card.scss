@@ -1,0 +1,24 @@
+.cart-product {
+  position: relative;
+
+  &__image {
+    width: 150px;
+    height: 150px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  &__meta {
+    text-align: left;
+  }
+
+  &__quantity {
+    font-size: 20px;
+  }
+  &__checkbox {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+}

@@ -1,0 +1,24 @@
+$colors: (
+  primary: #4d2b00,
+  secondary: #0b4f01,
+  accent: #4b2e00,
+  success: #28a745,
+  danger: #dc3545,
+  warning: #ffc107,
+  info: #17a2b8,
+  light: #f8f9fa,
+  dark: #343a40,
+  muted: #6c757d,
+  white: #ffffff,
+  black: #000000,
+) !default;
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #f6f1e7;
+  background-image: url('../../../public/background.png');
+  background-repeat: repeat;
+  background-size: 300px 300px;
+}

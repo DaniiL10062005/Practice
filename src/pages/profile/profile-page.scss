@@ -1,0 +1,9 @@
+.profile-page {
+  &__container {
+    height: 100%;
+
+    @media screen and (max-width: 1000px) {
+      flex-direction: column;
+    }
+  }
+}
