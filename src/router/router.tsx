@@ -5,6 +5,7 @@ import { LoginPage } from '../pages/login'
 import { Layout } from '../components/layout/Layout'
 import { RegisterPage } from '../pages/register/RegisterPage'
 import { ProfilePage } from '../pages/profile'
+import { ControlPage } from '../pages/control/ControlPage'
 
 export const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ export const router = createBrowserRouter([
       {
         path: '/profile',
         element: <ProfilePage />,
+      },
+      {
+        path: '/control',
+        element: <ControlPage />,
       },
     ],
   },

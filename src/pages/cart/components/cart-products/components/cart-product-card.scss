@@ -2,11 +2,21 @@
   position: relative;
 
   &__image {
-    width: 150px;
-    height: 150px;
-    aspect-ratio: 1 / 1;
+    width: 100px;
     object-fit: cover;
     border-radius: 8px;
+
+    @media screen and (max-width: 425px) {
+      width: 50px;
+    }
+  }
+
+  &__container {
+    gap: 20px;
+
+    @media screen and (max-width: 425px) {
+      gap: 10px;
+    }
   }
 
   &__meta {

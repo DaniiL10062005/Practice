@@ -1,4 +1,4 @@
-import { Checkbox, Flex, Typography } from 'antd'
+import { Button, Checkbox, Flex, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import './cart-products.scss'
 import { CartProductCard } from './components/CartProductCard'
@@ -26,15 +26,24 @@ export const CartProducts = () => {
 
   return (
     <Flex gap={20} vertical align="start" className="cart">
-      <Flex gap={10} justify="center" align="center">
-        <Title style={{ margin: 0 }} level={4}>
-          Выбрать все
-        </Title>
-        <Checkbox
-          checked={allChecked}
-          indeterminate={indeterminate}
-          onChange={(e) => toggleAll(e.target.checked)}
-        />
+      <Flex style={{ width: '100%' }} gap={30} justify="space-between">
+        <Flex gap={10} justify="center" align="center">
+          <Title style={{ margin: 0 }} level={4}>
+            Выбрать все
+          </Title>
+          <Checkbox
+            checked={allChecked}
+            indeterminate={indeterminate}
+            onChange={(e) => toggleAll(e.target.checked)}
+          />
+        </Flex>
+        <Button
+          disabled={items.filter((i) => i.checked === true).length < 1}
+          color="danger"
+          variant="solid"
+        >
+          Удалить
+        </Button>
       </Flex>
 
       <Flex gap={5} className="cart__products" vertical>

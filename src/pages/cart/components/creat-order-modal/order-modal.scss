@@ -1,0 +1,29 @@
+.masked-input {
+  background: var(--ant-color-bg-container);
+  color: var(--ant-color-text);
+  border: 1px solid var(--ant-color-border);
+  border-radius: var(--ant-border-radius);
+  padding: 4px 11px;
+  width: 100%;
+  line-height: 1.5715;
+}
+
+.masked-input:hover {
+  border-color: var(--ant-color-primary-hover);
+}
+
+.masked-input:focus {
+  border-color: var(--ant-color-primary);
+  box-shadow: 0 0 0 2px var(--ant-control-outline);
+  outline: 0;
+}
+
+.ant-form-item-has-error .masked-input {
+  border-color: var(--ant-color-error) !important;
+  box-shadow: 0 0 0 2px var(--ant-control-outline-error);
+}
+
+.masked-input:disabled {
+  background: var(--ant-color-bg-container-disabled);
+  color: var(--ant-color-text-disabled);
+}

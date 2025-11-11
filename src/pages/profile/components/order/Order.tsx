@@ -1,12 +1,14 @@
-import { Flex, Typography, Avatar, Collapse, Card, Image, theme } from 'antd'
+import { Flex, Typography, Avatar, Collapse, Card, theme } from 'antd'
 import './order.scss'
+import { useState } from 'react'
+import { ProductModal } from '../../../../components/product-modal/ProductModal'
 
 const { Text } = Typography
 const { Meta } = Card
-const { useToken } = theme
 
 export const Order = () => {
-  const { token } = useToken()
+  const { token } = theme.useToken()
+  const [openModal, setOpenModal] = useState(false)
 
   const items = [
     {
@@ -29,25 +31,27 @@ export const Order = () => {
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((_, index) => (
             <Card
               key={index}
+              hoverable
+              onClick={() => setOpenModal(true)}
               style={{
                 backgroundColor: token.colorBgContainer,
                 borderColor: token.colorBorderSecondary,
               }}
             >
               <Flex gap={20} align="center">
-                <Image
+                <img
                   width={100}
-                  draggable={false}
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr1x1h3e0DuqB_WaGGeu-R4joMCiwqw-C6dQ&s"
                 />
                 <Meta
                   className="cart-product__meta"
                   title={`Название книги ${index + 1}`}
                   description={
-                    <>
-                      <div>Цена: 133 руб.</div>
-                      <div>Количество: 1 шт.</div>
-                    </>
+                    <Flex vertical>
+                      <span>Автор</span>
+                      <span>Цена руб.</span>
+                      <span>Количество</span>
+                    </Flex>
                   }
                 />
               </Flex>
@@ -59,14 +63,17 @@ export const Order = () => {
   ]
 
   return (
-    <Collapse
-      items={items}
-      style={{
-        backgroundColor: token.colorBgContainer,
-        borderRadius: token.borderRadiusLG,
-        boxShadow: token.boxShadowTertiary,
-        border: `1px solid ${token.colorBorderSecondary}`,
-      }}
-    />
+    <>
+      <Collapse
+        items={items}
+        style={{
+          backgroundColor: token.colorBgContainer,
+          borderRadius: token.borderRadiusLG,
+          boxShadow: token.boxShadowTertiary,
+          border: `1px solid ${token.colorBorderSecondary}`,
+        }}
+      />
+      <ProductModal setOpen={setOpenModal} open={openModal} />
+    </>
   )
 }

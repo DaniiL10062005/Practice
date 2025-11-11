@@ -17,6 +17,7 @@ export function Layout() {
     { path: '/cart', label: 'Корзина' },
     { path: '/profile', label: 'Профиль' },
     { path: '/login', label: 'Войти' },
+    { path: '/control', label: 'Управление' },
   ]
 
   return (
