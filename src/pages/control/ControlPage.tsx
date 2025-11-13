@@ -1,17 +1,19 @@
 import { Tabs } from 'antd'
 import { Grid } from 'antd'
 import './control.scss'
+import { ControlOrders } from './components/orders/ControlOrders'
+import { ControlGoods } from './components/goods/ControlGoods'
 
 export const ControlPage = () => {
   const screens = Grid.useBreakpoint()
   const CONTROL_PAGES = [
     {
       label: 'Товары',
-      elem: <></>,
+      elem: <ControlGoods />,
     },
     {
       label: 'Заказы',
-      elem: <></>,
+      elem: <ControlOrders />,
     },
   ]
 
@@ -19,7 +21,7 @@ export const ControlPage = () => {
     <div className="control">
       <Tabs
         className="control__tabs"
-        defaultActiveKey="1"
+        defaultActiveKey="0"
         tabPosition={screens.md ? 'left' : 'top'}
         items={CONTROL_PAGES.map((item, index) => ({
           label: item.label,

@@ -1,0 +1,8 @@
+.container {
+  &__category {
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    max-height: calc(100vh - 450px);
+  }
+}
