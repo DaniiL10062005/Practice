@@ -1,6 +1,6 @@
 import { Flex, Typography, Avatar, Collapse, Card, theme, Select } from 'antd'
 import './control-order.scss'
-import type { good } from '../../../../../types/good'
+import type { good } from '../../../../../utils/types/good'
 
 const { Text } = Typography
 const { Meta } = Card

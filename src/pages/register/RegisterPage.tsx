@@ -4,12 +4,15 @@ import type { RegisterValues } from './components/register-schema/registerSchema
 import registerSchema from './components/register-schema/registerSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
+import { useRegisterUser } from '../../utils/queries/hooks/user'
 
 export const RegisterPage = () => {
   const navigate = useNavigate()
+  const { mutate, isPending } = useRegisterUser()
   const {
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
@@ -23,8 +26,21 @@ export const RegisterPage = () => {
   })
 
   const onSubmit = (data: RegisterValues) => {
-    console.log('Форма отправлена:', data)
-    navigate('/login')
+    mutate(
+      {
+        email: data.email,
+        password: data.password,
+        username: data.username,
+      },
+      {
+        onSuccess: () => {
+          navigate('/login')
+        },
+        onError: () => {
+          reset()
+        },
+      }
+    )
   }
 
   return (
@@ -40,7 +56,7 @@ export const RegisterPage = () => {
                 validateStatus={errors.username ? 'error' : ''}
                 help={errors.username?.message}
               >
-                <Input placeholder="Ivan" {...field} />
+                <Input disabled={isPending} placeholder="Ivan" {...field} />
               </Form.Item>
             )}
           />
@@ -53,7 +69,7 @@ export const RegisterPage = () => {
                 validateStatus={errors.email ? 'error' : ''}
                 help={errors.email?.message}
               >
-                <Input placeholder="email@example.com" {...field} />
+                <Input disabled={isPending} placeholder="email@example.com" {...field} />
               </Form.Item>
             )}
           />
@@ -67,7 +83,7 @@ export const RegisterPage = () => {
                 validateStatus={errors.password ? 'error' : ''}
                 help={errors.password?.message}
               >
-                <Input.Password placeholder="Введите пароль" {...field} />
+                <Input.Password disabled={isPending} placeholder="Введите пароль" {...field} />
               </Form.Item>
             )}
           />
@@ -80,12 +96,16 @@ export const RegisterPage = () => {
                 validateStatus={errors.confirmPassword ? 'error' : ''}
                 help={errors.confirmPassword?.message}
               >
-                <Input.Password placeholder="Введите пароль еще раз" {...field} />
+                <Input.Password
+                  disabled={isPending}
+                  placeholder="Введите пароль еще раз"
+                  {...field}
+                />
               </Form.Item>
             )}
           />
           <Form.Item>
-            <Button type="primary" htmlType="submit" block>
+            <Button disabled={isPending} type="primary" htmlType="submit" block>
               Зарегистрироваться
             </Button>
           </Form.Item>

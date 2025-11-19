@@ -4,7 +4,7 @@ import './layout.scss'
 import { MenuOutlined } from '@ant-design/icons'
 import { Button, Flex, Typography, Drawer } from 'antd'
 import { useState } from 'react'
-import { palette } from '../../theme/token'
+import { palette } from '../../utils/theme/token'
 
 const { Title, Paragraph } = Typography
 

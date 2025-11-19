@@ -3,8 +3,12 @@ import loginSchema, { type LoginValues } from './components/login-schema/loginSc
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
+import { useAuthUser } from '../../utils/queries/hooks/user'
+import { LOCAL_STORAGE } from '../../utils/constants/local-storage'
 
 export const LoginPage = () => {
+  const { mutate, isPending } = useAuthUser()
+
   const navigate = useNavigate()
   const {
     handleSubmit,
@@ -20,8 +24,18 @@ export const LoginPage = () => {
   })
 
   const onSubmit = (data: LoginValues) => {
-    console.log('Форма отправлена:', data)
-    navigate('/')
+    mutate(
+      { username: data.email, password: data.password },
+      {
+        onSuccess: (data) => {
+          localStorage.setItem(LOCAL_STORAGE.ACCESS_TOKEN, data.access_token)
+          navigate('/')
+        },
+        onError: (err) => {
+          console.log('Ошибка авторизации', err)
+        },
+      }
+    )
   }
 
   return (
@@ -37,7 +51,7 @@ export const LoginPage = () => {
                 validateStatus={errors.email ? 'error' : ''}
                 help={errors.email?.message}
               >
-                <Input placeholder="email@example.com" {...field} />
+                <Input disabled={isPending} placeholder="email@example.com" {...field} />
               </Form.Item>
             )}
           />
@@ -51,12 +65,12 @@ export const LoginPage = () => {
                 validateStatus={errors.password ? 'error' : ''}
                 help={errors.password?.message}
               >
-                <Input.Password placeholder="Введите пароль" {...field} />
+                <Input.Password disabled={isPending} placeholder="Введите пароль" {...field} />
               </Form.Item>
             )}
           />
           <Form.Item>
-            <Button type="primary" htmlType="submit" block>
+            <Button disabled={isPending} type="primary" htmlType="submit" block>
               Войти
             </Button>
           </Form.Item>
