@@ -1,20 +1,21 @@
 import { UserOutlined } from '@ant-design/icons'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Avatar, Button, Card, Flex, Form, Input } from 'antd'
-import { useState } from 'react'
+import { Avatar, Button, Card, Flex, Form, Input, message } from 'antd'
+import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import type { ProfileValues } from '../profile-schema/profileSchema'
 import profileSchema from '../profile-schema/profileSchema'
 import './profile-data.scss'
+import { useUserStore } from '../../../../utils/store/user-store'
+import { useGetMe, useUpdateMyData } from '../../../../utils/queries/hooks/user'
 
 export const ProfileData = () => {
   const [isEditing, setIsEditing] = useState(false)
 
-  const userData = {
-    username: 'BookLover99',
-    email: 'reader@example.com',
-    password: 'secret123',
-  }
+  const user = useUserStore((s) => s.user)
+  const setUser = useUserStore((s) => s.setUser)
+  const { mutate: getMe } = useGetMe()
+  const { mutate: updateMyData, isPending } = useUpdateMyData()
 
   const {
     handleSubmit,
@@ -23,17 +24,81 @@ export const ProfileData = () => {
     reset,
   } = useForm<ProfileValues>({
     resolver: zodResolver(profileSchema),
-    defaultValues: userData,
+    defaultValues: {
+      username: user?.username ?? '',
+      email: user?.email ?? '',
+      password: '',
+      default_address: user?.default_address ?? '',
+    },
   })
 
+  useEffect(() => {
+    if (!user) {
+      getMe(undefined, {
+        onSuccess: (user) => {
+          setUser(user)
+          reset({
+            username: user.username ?? '',
+            email: user.email ?? '',
+            password: '',
+            default_address: user.default_address ?? '',
+          })
+        },
+        onError: (err) => {
+          console.log('Ошибка получения пользователя при загрузке профиля', err)
+        },
+      })
+    }
+  }, [user, getMe, reset, setUser])
+
+
+  useEffect(() => {
+    if (user) {
+      reset({
+        username: user.username ?? '',
+        email: user.email ?? '',
+        password: '',
+        default_address: user.default_address ?? '',
+      })
+    }
+  }, [user, reset])
+
   const onSubmit = (data: ProfileValues) => {
-    console.log('Сохранено:', data)
-    setIsEditing(false)
+    updateMyData(
+      {
+        username: data.username,
+        email: data.email,
+        password: data.password || undefined,
+        default_address: data.default_address ? data.default_address : undefined,
+      },
+      {
+        onSuccess: () => {
+          getMe(undefined, {
+            onSuccess: (user) => {
+              setUser(user)
+              setIsEditing(false)
+            },
+            onError: (err) => {
+              console.log('Ошибка получения пользователя', err)
+            },
+          })
+        },
+        onError: (err) => {
+          console.log('Ошибка обновления профиля', err)
+          message.error('Не удалось обновить профиль')
+        },
+      }
+    )
   }
 
   const handleEditToggle = () => {
-    if (isEditing) {
-      reset(userData)
+    if (isEditing && user) {
+      reset({
+        username: user.username ?? '',
+        email: user.email ?? '',
+        password: '',
+        default_address: user.default_address ?? '',
+      })
     }
     setIsEditing((prev) => !prev)
   }
@@ -83,11 +148,24 @@ export const ProfileData = () => {
               </Form.Item>
             )}
           />
+          <Controller
+            name="default_address"
+            control={control}
+            render={({ field }) => (
+              <Form.Item
+                label="Адрес"
+                validateStatus={errors.default_address ? 'error' : ''}
+                help={errors.default_address?.message}
+              >
+                <Input {...field} placeholder="Введите адрес" disabled={!isEditing} />
+              </Form.Item>
+            )}
+          />
 
           <Flex gap={10}>
             {isEditing ? (
               <>
-                <Button type="primary" htmlType="submit" block>
+                <Button loading={isPending} type="primary" htmlType="submit" block>
                   Сохранить
                 </Button>
                 <Button onClick={handleEditToggle} block>

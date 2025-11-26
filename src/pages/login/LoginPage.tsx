@@ -3,11 +3,14 @@ import loginSchema, { type LoginValues } from './components/login-schema/loginSc
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
-import { useAuthUser } from '../../utils/queries/hooks/user'
+import { useAuthUser, useGetMe } from '../../utils/queries/hooks/user'
 import { LOCAL_STORAGE } from '../../utils/constants/local-storage'
+import { useUserStore } from '../../utils/store/user-store'
 
 export const LoginPage = () => {
   const { mutate, isPending } = useAuthUser()
+  const { mutate: getMe } = useGetMe()
+  const setUser = useUserStore((s) => s.setUser)
 
   const navigate = useNavigate()
   const {
@@ -29,7 +32,15 @@ export const LoginPage = () => {
       {
         onSuccess: (data) => {
           localStorage.setItem(LOCAL_STORAGE.ACCESS_TOKEN, data.access_token)
-          navigate('/')
+          getMe(undefined, {
+            onSuccess: (user) => {
+              setUser(user)
+              navigate('/')
+            },
+            onError: (err) => {
+              console.log('Ошибка получения пользователя', err)
+            },
+          })
         },
         onError: (err) => {
           console.log('Ошибка авторизации', err)

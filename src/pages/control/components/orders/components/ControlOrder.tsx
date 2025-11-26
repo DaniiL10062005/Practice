@@ -1,6 +1,6 @@
 import { Flex, Typography, Avatar, Collapse, Card, theme, Select } from 'antd'
 import './control-order.scss'
-import type { good } from '../../../../../utils/types/good'
+import type { Book } from '../../../../../utils/types/books'
 
 const { Text } = Typography
 const { Meta } = Card
@@ -9,7 +9,7 @@ type ControlOrderProps = {
   id: string
   date: string
   deliveryStatus: string
-  goods: good[] | null
+  goods: Book[] | null
 }
 
 export const ControlOrder = ({ id, date, deliveryStatus }: ControlOrderProps) => {

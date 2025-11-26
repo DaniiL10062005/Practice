@@ -1,0 +1,21 @@
+.goods {
+  &__scroll-segmented {
+    display: flex;
+    gap: 10px;
+    max-width: 60rem;
+    overflow-x: auto;
+    white-space: nowrap;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    scrollbar-width: none;
+
+    .ant-segmented {
+      display: inline-flex;
+      width: max-content;
+      white-space: nowrap;
+    }
+  }
+}

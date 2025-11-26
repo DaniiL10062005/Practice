@@ -1,8 +1,9 @@
-import { Button, Flex, Pagination, Typography } from 'antd'
+import { Button, Flex, Pagination, Segmented, Typography } from 'antd'
 import { GoodCard } from './components/GoodCard'
 import { useState } from 'react'
 import { PlusOutlined } from '@ant-design/icons'
 import { GoodModal } from './components/GoodModal'
+import './goods.scss'
 
 const { Title } = Typography
 
@@ -14,6 +15,41 @@ export const Goods = () => {
         <Title style={{ margin: '0' }} level={4}>
           Товары
         </Title>
+        <Button
+          onClick={() => setModalOpen(true)}
+          style={{ padding: '10px' }}
+          color="blue"
+          variant="solid"
+        >
+          <PlusOutlined />
+        </Button>
+      </Flex>
+      <Flex align="center" gap={10}>
+        <div className="goods__scroll-segmented">
+          <Segmented
+            size="large"
+            options={[
+              'Чехов',
+              'Достоевский',
+              'Пушкин',
+              'Оруэл',
+              'Хаксли',
+              'Чехов',
+              'Достоевский',
+              'Пушкин',
+              'Оруэл',
+              'Хаксли',
+              'Чехов',
+              'Достоевский',
+              'Пушкин',
+              'Оруэл',
+              'Хаксли',
+            ]}
+            onChange={(value) => {
+              console.log(value)
+            }}
+          />
+        </div>
         <Button
           onClick={() => setModalOpen(true)}
           style={{ padding: '10px' }}

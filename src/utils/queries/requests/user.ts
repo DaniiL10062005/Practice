@@ -1,4 +1,10 @@
-import type { LoginUserRequest, LoginUserResponse, RegisterUserRequest } from '../../types/user'
+import type {
+  GetMeResponse,
+  LoginUserRequest,
+  LoginUserResponse,
+  RegisterUserRequest,
+  UpdateMyDataRequest,
+} from '../../types/user'
 import { privateApi, publicApi } from '../request-client'
 
 export const RegisterUser = async ({
@@ -51,6 +57,26 @@ export const AuthUser = async ({
 export const LogoutUser = async () => {
   try {
     const response = await privateApi.post('auth/jwt/logout')
+    return response.data
+  } catch (e) {
+    console.log(e)
+    throw e
+  }
+}
+
+export const GetMe = async (): Promise<GetMeResponse> => {
+  try {
+    const response = await privateApi.get('api/v1/users/me')
+    return response.data
+  } catch (e) {
+    console.log(e)
+    throw e
+  }
+}
+
+export const UpdateMyData = async (data: UpdateMyDataRequest) => {
+  try {
+    const response = await privateApi.patch('api/v1/users/me', data)
     return response.data
   } catch (e) {
     console.log(e)

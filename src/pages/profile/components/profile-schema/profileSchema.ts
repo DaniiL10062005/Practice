@@ -12,6 +12,7 @@ const profileSchema = z.object({
     .string()
     .min(6, { message: 'Пароль должен содержать не менее 6 символов' })
     .max(50, { message: 'Пароль слишком длинный' }),
+  default_address: z.string().max(50, { message: 'Адрес слишком длинный' }).optional(),
 })
 
 export type ProfileValues = z.infer<typeof profileSchema>

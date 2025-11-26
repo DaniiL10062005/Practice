@@ -3,6 +3,7 @@ import { Grid } from 'antd'
 import './control.scss'
 import { ControlOrders } from './components/orders/ControlOrders'
 import { ControlGoods } from './components/goods/ControlGoods'
+import { useAuthGuard } from '../../utils/hooks/use-auth-guard'
 
 export const ControlPage = () => {
   const screens = Grid.useBreakpoint()
@@ -16,7 +17,8 @@ export const ControlPage = () => {
       elem: <ControlOrders />,
     },
   ]
-
+  const { isAuthenticated } = useAuthGuard()
+  if (!isAuthenticated) return null
   return (
     <div className="control">
       <Tabs

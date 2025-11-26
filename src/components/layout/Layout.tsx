@@ -1,25 +1,53 @@
-import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import logoMain from '../../../public/logoMain.jpg'
 import './layout.scss'
 import { MenuOutlined } from '@ant-design/icons'
-import { Button, Flex, Typography, Drawer } from 'antd'
+import { Button, Flex, Typography, Drawer, message } from 'antd'
 import { useState } from 'react'
 import { palette } from '../../utils/theme/token'
+import { LOCAL_STORAGE } from '../../utils/constants/local-storage'
+import { useLogoutUser } from '../../utils/queries/hooks/user'
+import { useUserStore } from '../../utils/store/user-store'
 
 const { Title, Paragraph } = Typography
 
 export function Layout() {
   const location = useLocation()
   const [open, setOpen] = useState(false)
+  const navigate = useNavigate()
 
-  const menuItems = [
-    { path: '/', label: 'Главная' },
-    { path: '/cart', label: 'Корзина' },
-    { path: '/profile', label: 'Профиль' },
-    { path: '/login', label: 'Войти' },
-    { path: '/control', label: 'Управление' },
-  ]
+  const isAuthenticated = localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN) ? true : false
+  const { mutate: logoutMutation, isPending: isLogoutPending } = useLogoutUser()
 
+  const clearUser = useUserStore((s) => s.clearUser)
+
+  const menuItems = isAuthenticated
+    ? [
+        { path: '/', label: 'Главная' },
+        { path: '/cart', label: 'Корзина' },
+        { path: '/profile', label: 'Профиль' },
+        { path: '/control', label: 'Управление' },
+      ]
+    : [
+        { path: '/', label: 'Главная' },
+        { path: '/login', label: 'Войти' },
+      ]
+
+  const handleLogout = () => {
+    if (isLogoutPending) return
+
+    logoutMutation(undefined, {
+      onSuccess: () => {
+        localStorage.removeItem(LOCAL_STORAGE.ACCESS_TOKEN)
+        clearUser()
+        navigate('/')
+      },
+      onError: (err) => {
+        console.log('Ошибка логаута', err)
+        message.error('Не удалось выйти из аккаунта')
+      },
+    })
+  }
   return (
     <div className="layout">
       <nav className="layout__nav">
@@ -46,6 +74,13 @@ export function Layout() {
                 </Title>
               </Link>
             ))}
+            {isAuthenticated && (
+              <div onClick={handleLogout} className="layout__nav--link">
+                <Title level={4} className="layout__title">
+                  Выйти
+                </Title>
+              </div>
+            )}
           </Flex>
 
           <Button

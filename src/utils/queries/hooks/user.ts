@@ -1,6 +1,12 @@
 import { useMutation } from '@tanstack/react-query'
-import { AuthUser, LogoutUser, RegisterUser } from '../requests/user'
-import type { LoginUserRequest, LoginUserResponse, RegisterUserRequest } from '../../types/user'
+import { AuthUser, GetMe, LogoutUser, RegisterUser, UpdateMyData } from '../requests/user'
+import type {
+  GetMeResponse,
+  LoginUserRequest,
+  LoginUserResponse,
+  RegisterUserRequest,
+  UpdateMyDataRequest,
+} from '../../types/user'
 
 export const useRegisterUser = () => {
   return useMutation({
@@ -15,4 +21,14 @@ export const useAuthUser = () => {
 }
 export const useLogoutUser = () => {
   return useMutation({ mutationFn: () => LogoutUser() })
+}
+export const useGetMe = () => {
+  return useMutation<GetMeResponse, Error>({
+    mutationFn: () => GetMe(),
+  })
+}
+export const useUpdateMyData = () => {
+  return useMutation<void, Error, UpdateMyDataRequest>({
+    mutationFn: (data) => UpdateMyData(data),
+  })
 }
