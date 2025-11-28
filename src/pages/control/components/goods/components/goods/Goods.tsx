@@ -64,7 +64,7 @@ export const Goods = ({
     }
   }
   const authorOptions: SegmentedProps['options'] = [
-    { label: 'Без автора', value: 'all' },
+    { label: 'Все', value: 'all' },
     ...(authors ?? []).map((author) => ({
       label: author.name,
       value: author.id,

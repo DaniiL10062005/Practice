@@ -1,11 +1,18 @@
 import { Card, Flex } from 'antd'
 import { useState } from 'react'
 import { ProductModal } from '../../../../components/product-modal/ProductModal'
+import type { Book } from '../../../../utils/types/books'
+import './ProductCard.scss'
 
 const { Meta } = Card
 
-export const ProductCard = () => {
+type Props = {
+  book: Book
+}
+
+export const ProductCard = ({ book }: Props) => {
   const [openModal, setOpenModal] = useState(false)
+
   return (
     <>
       <Card
@@ -13,23 +20,29 @@ export const ProductCard = () => {
         hoverable
         cover={
           <img
+            className="image"
             draggable={false}
-            alt="example"
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr1x1h3e0DuqB_WaGGeu-R4joMCiwqw-C6dQ&s"
+            alt={book.title}
+            src={`https://testapi.2neko.ru/files/${book.image}`}
           />
         }
       >
         <Meta
-          title="Название книги"
+          title={book.title}
           description={
             <Flex vertical>
-              <span>Автор</span>
-              <span>Цена руб.</span>
+              {book.authors.map((author, index) => (
+                <span key={index}>
+                  {author.name}
+                  {', '}
+                </span>
+              ))}
+              <span>{book.price} руб.</span>
             </Flex>
           }
         />
       </Card>
-      <ProductModal open={openModal} setOpen={setOpenModal} />
+      <ProductModal isCart={false} book={book} open={openModal} setOpen={setOpenModal} />
     </>
   )
 }

@@ -34,8 +34,6 @@ export function Layout() {
     })
   }, [])
 
-  console.log(user)
-
   const menuItems = isAuthenticated
     ? user?.is_superuser
       ? [

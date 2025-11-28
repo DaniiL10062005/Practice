@@ -1,75 +1,68 @@
-import { Flex, Typography, Avatar, Collapse, Card, theme, Select } from 'antd'
+import { Flex, Typography, Avatar, Collapse, theme, Select } from 'antd'
 import './control-order.scss'
-import type { Book } from '../../../../../utils/types/books'
+import type { Order } from '../../../../../utils/types/order'
+import { ORDER_STATUS, type OrderStatus } from '../../../../../utils/constants/order-status'
+import { OrderAdminAvatar } from './components/OrderAdminAvatar'
+import { OrderAdminCard } from './components/OrderAdminCard'
+import { useEffect, useState } from 'react'
+import { useUpdateOrder } from '../../../../../utils/queries/hooks/order'
 
 const { Text } = Typography
-const { Meta } = Card
 
 type ControlOrderProps = {
-  id: string
-  date: string
-  deliveryStatus: string
-  goods: Book[] | null
+  order: Order
 }
 
-export const ControlOrder = ({ id, date, deliveryStatus }: ControlOrderProps) => {
+export const ControlOrder = ({ order }: ControlOrderProps) => {
   const { token } = theme.useToken()
+  const [status, setStatus] = useState<OrderStatus>(order.status)
+  const { mutate, isPending } = useUpdateOrder()
+
+  useEffect(() => {
+    mutate(
+      { order_id: order.id, data: { status: status } },
+      {
+        onSuccess: (resp) => {
+          setStatus(resp.status)
+        },
+      }
+    )
+  }, [status])
+
   const items = [
     {
       key: '1',
       label: (
-        <Flex className="control-order" gap={15} justify="space-between">
-          <Text>Номер заказа: {id}</Text>
-          <Text>Дата: {date}</Text>
+        <Flex style={{ width: '100%' }} className="control-order" gap={15} justify="space-between">
+          <Text>Номер заказа: {order.id}</Text>
+          <Text>Трек номер: {order.tracking_number}</Text>
           <Select
-            defaultValue={deliveryStatus}
+            disabled={isPending}
+            defaultValue={status}
+            onChange={(value) => setStatus(value as OrderStatus)}
             style={{ width: 120 }}
             onClick={(e) => {
               e.stopPropagation()
             }}
             options={[
-              { value: 'inProcessing', label: 'В обработке' },
-              { value: 'onWay', label: 'Доставляется' },
-              { value: 'delivered', label: 'Доставлен' },
-              { value: 'formed', label: 'Формируется' },
+              { value: 'pending', label: ORDER_STATUS.pending },
+              { value: 'confirmed', label: ORDER_STATUS.confirmed },
+              { value: 'delivered', label: ORDER_STATUS.delivered },
+              { value: 'shipped', label: ORDER_STATUS.shipped },
+              { value: 'cancelled', label: ORDER_STATUS.cancelled },
             ]}
           />
-          <Avatar.Group shape="square">
-            <Avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr1x1h3e0DuqB_WaGGeu-R4joMCiwqw-C6dQ&s" />
-            <Avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr1x1h3e0DuqB_WaGGeu-R4joMCiwqw-C6dQ&s" />
-            <Avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr1x1h3e0DuqB_WaGGeu-R4joMCiwqw-C6dQ&s" />
-            <Avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr1x1h3e0DuqB_WaGGeu-R4joMCiwqw-C6dQ&s" />
+          <Avatar.Group style={{ width: '100px', overflow: 'hidden' }} shape="square">
+            {order.order_items.map((book, index) => (
+              <OrderAdminAvatar key={index} book_id={book.book_id} />
+            ))}
           </Avatar.Group>
         </Flex>
       ),
       children: (
         <Flex vertical gap={10}>
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((_, index) => (
-            <Card
-              key={index}
-              style={{
-                backgroundColor: token.colorBgContainer,
-                borderColor: token.colorBorderSecondary,
-              }}
-            >
-              <Flex gap={20} align="center">
-                <img
-                  width={100}
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr1x1h3e0DuqB_WaGGeu-R4joMCiwqw-C6dQ&s"
-                />
-                <Meta
-                  className="cart-product__meta"
-                  title={`Название книги ${index + 1}`}
-                  description={
-                    <Flex vertical>
-                      <span>Автор</span>
-                      <span>Цена руб.</span>
-                      <span>Количество</span>
-                    </Flex>
-                  }
-                />
-              </Flex>
-            </Card>
+          {order.order_items.map((order, index) => (
+            <OrderAdminCard book_id={order.book_id} quantity={order.quantity} key={index} />
           ))}
         </Flex>
       ),
@@ -85,6 +78,7 @@ export const ControlOrder = ({ id, date, deliveryStatus }: ControlOrderProps) =>
           borderRadius: token.borderRadiusLG,
           boxShadow: token.boxShadowTertiary,
           border: `1px solid ${token.colorBorderSecondary}`,
+          width: '100%',
         }}
       />
     </>

@@ -8,7 +8,7 @@ export const ProfilePage = () => {
   const { isAuthenticated } = useAuthGuard()
   if (!isAuthenticated) return null
   return (
-    <Flex className="profile-page__container" gap={20} align="center" justify="space-between">
+    <Flex className="profile-page__container" gap={20} align="start" justify="space-between">
       <ProfileData />
       <ProfileOrders />
     </Flex>

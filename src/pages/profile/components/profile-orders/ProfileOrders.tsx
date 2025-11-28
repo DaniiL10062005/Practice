@@ -1,12 +1,14 @@
 import { Flex } from 'antd'
 import { Order } from '../order/Order'
 import './profile-orders.scss'
+import { useGetMyOrders } from '../../../../utils/queries/hooks/order'
 
 export const ProfileOrders = () => {
+  const { data: cartItems } = useGetMyOrders({ page: 1, limit: 20 })
   return (
     <Flex gap={5} className="profile-orders__orders" vertical>
-      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((item) => (
-        <Order key={item} />
+      {cartItems?.data.map((item, index) => (
+        <Order item={item} key={index} />
       ))}
     </Flex>
   )

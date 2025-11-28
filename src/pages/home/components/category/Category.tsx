@@ -1,12 +1,25 @@
-import { Segmented } from 'antd'
+import { Segmented, type SegmentedProps } from 'antd'
+import type { Genre } from '../../../../utils/types/genres'
 
-export const Category = () => {
+type Props = {
+  genres: Genre[] | undefined
+  setSelectedGenre: (genre: Genre | undefined) => void
+}
+
+export const Category = ({ genres, setSelectedGenre }: Props) => {
+  const genreOptions: SegmentedProps['options'] = [
+    { label: 'Все', value: 'all' },
+    ...(genres ?? []).map((genre) => ({
+      label: genre.genre,
+      value: genre.id,
+    })),
+  ]
   return (
     <Segmented
       size="large"
-      options={['Бестселлер', 'Научпоп', 'Детектив', 'Романтика', 'Худодественная литература']}
+      options={genreOptions}
       onChange={(value) => {
-        console.log(value)
+        setSelectedGenre(genres?.find((genre) => genre.id === value) ?? undefined)
       }}
     />
   )
