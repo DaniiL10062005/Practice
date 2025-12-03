@@ -8,7 +8,7 @@ export const orderSchema = z.object({
   comment: z.string().optional(),
   phone: z
     .string()
-    .min(1, 'обязательное поле')
+    .min(1, 'Обязательное поле')
     .transform(digits)
     .transform((d) => (d.startsWith('8') ? `7${d.slice(1)}` : d))
     .refine((d) => /^7\d{10}$/.test(d), 'Введите номер полностью')

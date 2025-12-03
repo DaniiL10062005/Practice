@@ -97,7 +97,7 @@ export const AuthorModal = ({ isOpen, setOpen, isChange, refetch, author }: Chan
       <Input
         value={authorName}
         status={error ? 'error' : undefined}
-        onChange={(e) => {
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setAuthorName(e.target.value)
           if (error) validateAuthor(e.target.value)
         }}

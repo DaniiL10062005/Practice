@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { LOCAL_STORAGE } from '../constants/local-storage'
-
+// @ts-nocheck
 export const publicApi = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 })

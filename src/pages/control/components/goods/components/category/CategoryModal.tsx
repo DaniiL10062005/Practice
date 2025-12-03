@@ -119,7 +119,7 @@ export const CategoryModal = ({ isOpen, setOpen, isChange, refetch, id }: Change
       <Input
         value={categoryName}
         status={error ? 'error' : undefined}
-        onChange={(e) => {
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setCategoryName(e.target.value)
           if (error) {
             validateCategory(e.target.value)
