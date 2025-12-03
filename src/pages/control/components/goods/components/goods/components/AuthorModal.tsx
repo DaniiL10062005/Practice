@@ -1,5 +1,6 @@
 import { Button, Input, Modal } from 'antd'
-import { useState, type Dispatch, type SetStateAction } from 'react'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import { z } from 'zod'
 import { useCreateAuthor, useUpdateAuthor } from '../../../../../../../utils/queries/hooks/authors'
 import type { Author } from '../../../../../../../utils/types/authors'
 
@@ -11,17 +12,41 @@ type ChangeAuthorModal = {
   author?: Author | null
 }
 
+const authorSchema = z
+  .string()
+  .trim()
+  .min(1, 'Имя автора обязательно')
+  .max(50, 'Имя автора не должно превышать 50 символов')
+
 export const AuthorModal = ({ isOpen, setOpen, isChange, refetch, author }: ChangeAuthorModal) => {
   const [authorName, setAuthorName] = useState('')
+  const [error, setError] = useState<string | null>(null)
+
   const { mutate } = useCreateAuthor()
   const { mutate: updateAuthor } = useUpdateAuthor()
 
+  const validateAuthor = (value: string): string | null => {
+    const result = authorSchema.safeParse(value)
+
+    if (!result.success) {
+      const message = result.error.issues[0]?.message || 'Некорректное имя'
+      setError(message)
+      return null
+    }
+
+    setError(null)
+    return result.data
+  }
+
   const onOk = () => {
+    const validName = validateAuthor(authorName)
+    if (!validName) return
+
     if (isChange && author) {
       updateAuthor(
         {
           id: author.id,
-          name: authorName,
+          name: validName,
         },
         {
           onSuccess: () => {
@@ -34,7 +59,7 @@ export const AuthorModal = ({ isOpen, setOpen, isChange, refetch, author }: Chan
     } else {
       mutate(
         {
-          name: authorName,
+          name: validName,
         },
         {
           onSuccess: () => {
@@ -46,19 +71,40 @@ export const AuthorModal = ({ isOpen, setOpen, isChange, refetch, author }: Chan
       )
     }
   }
+
+  useEffect(() => {
+    if (author && isChange) {
+      setAuthorName(author.name)
+      setError(null)
+    } else {
+      setAuthorName('')
+      setError(null)
+    }
+  }, [author, isChange])
+
   return (
     <Modal
       title={isChange ? 'Изменение автора' : 'Создание автора'}
       closable={{ 'aria-label': 'Custom Close Button' }}
       open={isOpen}
       onCancel={() => setOpen(false)}
-      footer={[<Button onClick={onOk}>Сохранить</Button>]}
+      footer={[
+        <Button key="ok" onClick={onOk}>
+          Сохранить
+        </Button>,
+      ]}
     >
       <Input
         value={authorName}
-        onChange={(e) => setAuthorName(e.target.value)}
-        placeholder={isChange ? author?.name : 'Имя автора'}
+        status={error ? 'error' : undefined}
+        onChange={(e) => {
+          setAuthorName(e.target.value)
+          if (error) validateAuthor(e.target.value)
+        }}
+        placeholder="Имя автора"
       />
+
+      {error && <div style={{ color: 'red', marginTop: 8, fontSize: 12 }}>{error}</div>}
     </Modal>
   )
 }
